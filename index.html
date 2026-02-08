@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lightbin</title>
+  <link rel="preconnect" href="https://rsms.me/">
+  <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+  <style>
+    * { margin: 0; padding: 0; }
+    body {
+      background: #040007;
+      overflow: hidden;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    .logo-text {
+      position: absolute;
+      top: 5%;
+      left: 51%;
+      font-size: 40px;
+      font-weight: 700;
+      color: #d4bae7;
+      letter-spacing: -1px;
+      pointer-events: none;
+      user-select: none;
+    }
+    .center-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      font-size: 16px;
+      line-height: 2;
+      color: #f1ecf7;
+      pointer-events: auto;
+    }
+    .center-text a {
+      color: #f1ecf7;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="logo-text">Lightbin</div>
+  <div class="center-text">
+    Model connection available at <a href="https://mcp.lightbin.ai">https://mcp.lightbin.ai</a><br>
+    For support contact <a href="mailto:me@willrodman.com">me@willrodman.com</a>
+  </div>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module">
+    import * as THREE from 'three';
+    import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+    // Scene
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x040007);
+
+    // Orthographic camera — no perspective distortion, cube looks the same everywhere
+    const aspect = innerWidth / innerHeight;
+    const viewSize = 5;
+    const camera = new THREE.OrthographicCamera(
+      -viewSize * aspect, viewSize * aspect,
+      viewSize, -viewSize,
+      0.1, 100
+    );
+    camera.position.set(3, 1, 3);
+    camera.lookAt(0, 0, 0);
+
+    // Renderer
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.setPixelRatio(devicePixelRatio);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.0;
+    document.body.appendChild(renderer.domElement);
+
+    // Dim ambient — sides away from light stay subtle
+    scene.add(new THREE.AmbientLight(0x332244, 3));
+
+    // Directional light from top-right
+    const dirLight = new THREE.DirectionalLight(0xffffff, 3);
+    dirLight.position.set(2, 6, 0);
+    scene.add(dirLight);
+
+    // Second light from the right side
+    const sideLight = new THREE.DirectionalLight(0xffffff, 2);
+    sideLight.position.set(6, 3, 2);
+    scene.add(sideLight);
+
+    // Purple rounded cube — smaller, shifted left
+    const geometry = new RoundedBoxGeometry(0.5, 0.5, 0.5, 6, 0.05);
+    const material = new THREE.MeshPhongMaterial({
+      color: 0x210130,
+      specular: 0x8855cc,
+      shininess: 40,
+    });
+    const model = new THREE.Mesh(geometry, material);
+    model.position.set(-0.7, 4.25, 0);
+    scene.add(model);
+
+    // Animation loop — auto-spin only, no drag
+    (function animate() {
+      requestAnimationFrame(animate);
+      model.rotation.y += 0.005;
+      renderer.render(scene, camera);
+    })();
+
+    // Resize
+    addEventListener('resize', () => {
+      const a = innerWidth / innerHeight;
+      camera.left = -viewSize * a;
+      camera.right = viewSize * a;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+  </script>
+</body>
+</html>
