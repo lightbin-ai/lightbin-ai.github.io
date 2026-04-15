@@ -8,85 +8,77 @@
   <link rel="preconnect" href="https://rsms.me/">
   <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
   <style>
-    * { margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+    }
     body {
       background: #040007;
+      font-family: 'Inter', system-ui, sans-serif;
       overflow-x: hidden;
       overflow-y: auto;
-      font-family: 'Inter', system-ui, sans-serif;
     }
     canvas {
       position: fixed;
-      top: 0;
-      left: 0;
+      inset: 0;
       z-index: 0;
     }
+    /* Single stacking container — logo on top, content below */
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      padding: 48px 20px;
+    }
     .logo-text {
-      position: fixed;
-      top: 5%;
-      left: 48%;
       font-size: 40px;
       font-weight: 700;
       color: #d4bae7;
       letter-spacing: -1px;
       pointer-events: none;
       user-select: none;
-      z-index: 2;
     }
-    .center-text {
-      position: relative;
-      z-index: 1;
-      width: min(912px, calc(100vw - 40px));
-      margin: 0 auto;
+    .content {
+      width: min(912px, 100%);
       text-align: center;
       font-size: 16px;
       line-height: 2;
       color: #f1ecf7;
-      pointer-events: auto;
-      /* vertically center when content fits in viewport */
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 80px 0 40px 0;
-      box-sizing: border-box;
     }
-    .center-text a {
+    .content a {
       color: #f1ecf7;
       text-decoration: underline;
     }
     @media (max-width: 600px) {
-      .logo-text {
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 28px;
-        top: 20px;
-      }
-      .center-text {
-        font-size: 14px;
-        padding: 72px 0 40px 0;
-      }
+      .logo-text { font-size: 28px; }
+      .content { font-size: 14px; }
     }
   </style>
 </head>
 <body>
-  <div class="logo-text">Lightbin</div>
-  <div class="center-text">
-    <video autoplay loop muted playsinline
-      style="
-        display: block;
-        width: 100%;
-        border-radius: 16px;
-        border: 1px solid rgba(0, 0, 0, 0.9);
-        box-shadow: 0 8px 12px -2px rgba(180, 130, 220, 0.2);
-        margin: 0 auto 28px auto;
-      ">
-      <source src="demo_recording.mov" type="video/mp4">
-    </video>
-    Request tool access by contacting <a href="mailto:me@willrodman.com">me@willrodman.com</a>.<br>
-    Once access is provisioned, click "Enable Model Connection."<br>
-    Wait 10 minutes.<br>
-    Connect Chatbot to MCP at <a href="https://connect.lightbin.ai/mcp">https://connect.lightbin.ai/mcp</a>
+  <div class="page">
+    <div class="logo-text">Lightbin</div>
+    <div class="content">
+      <video autoplay loop muted playsinline
+        style="
+          display: block;
+          width: 100%;
+          border-radius: 16px;
+          border: 1px solid rgba(0, 0, 0, 0.9);
+          box-shadow: 0 8px 12px -2px rgba(180, 130, 220, 0.2);
+          margin-bottom: 28px;
+        ">
+        <source src="demo_recording.mov" type="video/mp4">
+      </video>
+      Request tool access by contacting <a href="mailto:me@willrodman.com">me@willrodman.com</a>.<br>
+      Once access is provisioned, click "Enable Model Connection."<br>
+      Wait 10 minutes.<br>
+      Connect Chatbot to MCP at <a href="https://connect.lightbin.ai/mcp">https://connect.lightbin.ai/mcp</a>
     <button id="enable-btn" onclick="startOAuth()"
       style="
         background: #333;
@@ -106,6 +98,7 @@
       onmouseover="this.style.background='#444'"
       onmouseout="this.style.background='#333'"
     >Enable Model Connection</button>
+    </div>
   </div>
 
   <script>
